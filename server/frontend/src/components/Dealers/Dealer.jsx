@@ -11,7 +11,7 @@ import Header from '../Header/Header';
 const Dealer = () => {
 
 
-  const [dealer, setDealer] = useState({});
+  const [dealer, setDealer] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [unreviewed, setUnreviewed] = useState(false);
   const [postReview, setPostReview] = useState(<></>)
@@ -25,16 +25,15 @@ const Dealer = () => {
   let post_review = root_url+`postreview/${id}`;
   
   const get_dealer = async ()=>{
-    const res = await fetch(dealer_url, {
-      method: "GET"
-    });
-    const retobj = await res.json();
-    
-    if(retobj.status === 200) {
-      let dealerobjs = Array.from(retobj.dealer)
-      setDealer(dealerobjs[0])
-    }
+  const res = await fetch(dealer_url, {
+    method: "GET"
+  });
+  const retobj = await res.json();
+  
+  if(retobj.status === 200) {
+    setDealer(retobj.dealer)
   }
+}
 
   const get_reviews = async ()=>{
     const res = await fetch(reviews_url, {
@@ -71,8 +70,16 @@ return(
   <div style={{margin:"20px"}}>
       <Header/>
       <div style={{marginTop:"10px"}}>
-      <h1 style={{color:"grey"}}>{dealer.full_name}{postReview}</h1>
-      <h4  style={{color:"grey"}}>{dealer['city']},{dealer['address']}, Zip - {dealer['zip']}, {dealer['state']} </h4>
+      <h1 style={{color:"grey"}}>
+  {dealer?.full_name || "Loading dealer..."}
+  {postReview}
+</h1>
+
+{dealer && (
+  <h4 style={{color:"grey"}}>
+    {dealer.city},{dealer.address}, Zip - {dealer.zip}, {dealer.state}
+  </h4>
+)}
       </div>
       <div class="reviews_panel">
       {reviews.length === 0 && unreviewed === false ? (

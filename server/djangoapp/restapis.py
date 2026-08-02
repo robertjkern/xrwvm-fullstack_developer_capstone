@@ -39,14 +39,16 @@ def get_request(endpoint, **kwargs):
 # request_url = sentiment_analyzer_url+"analyze/"+text
 # Add code for retrieving sentiments
 def analyze_review_sentiments(text):
-    request_url = "https://sentianalyzer.2cuc7x7phzgb.us-south.codeengine.appdomain.cloud/analyze/"+text
+    request_url = sentiment_analyzer_url + "analyze/" + text
+
     try:
-        # Call get method of requests library with URL and parameters
-        response = requests.get(request_url)
+        response = requests.get(request_url, timeout=10)
+        response.raise_for_status()
         return response.json()
+
     except Exception as err:
-        print(f"Unexpected {err=}, {type(err)=}")
-        print("Network exception occurred")
+        print(f"Sentiment analysis error: {err}")
+        return {"sentiment": "neutral"}
 
 
 # def post_review(data_dict):
